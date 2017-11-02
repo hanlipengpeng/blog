@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property>
+		<name>yxlib.host.ip</name>
+		<value>master</value>
+		<description>the same as host ip</description>
+	</property>
+	<property>
+		<name>fs.default.name</name>
+		<value>hdfs://master:9000/</value>
+		<description>hadoop name node</description>
+	</property>
+	<property>
+		<name>mapred.job.tracker</name>
+		<value>hdfs://master:9001/</value>
+		<description>hadoop job tracker</description>
+	</property>
+	<property>
+		<name>dfs.permissions</name>
+		<value>true</value>
+	</property>
+	<!--uri : UserGroupInfomation -->
+	<property>
+		<name>hadoop.job.ugi</name>
+		<value>root,123456</value>
+	</property>
+	<property>
+		<name>dfs.replication</name>
+		<value>2</value>
+		<description>hdfs file replication</description>
+	</property>
+	<property>
+		<name>yxlib.job.third.libs</name>
+		<value>
+			/libs/jod/commons-lang.jar,
+			/libs/jod/commons-io-1.4.jar,
+			/libs/jod/jodconverter-2.2.2.jar,
+			/libs/jod/jodconverter-cli-2.2.2.jar,
+			/libs/jod/juh-3.0.1.jar,
+			/libs/jod/jurt-3.0.1.jar,
+			/libs/jod/ridl-3.0.1.jar,
+			/libs/jod/slf4j-api-1.5.6.jar,
+			/libs/jod/slf4j-jdk14-1.5.6.jar,
+			/libs/jod/unoil-3.0.1.jar,
+			/libs/jod/xstream-1.3.1.jar,
+			/libs/jod/JMuPdf.jar,
+			/libs/lucene/lucene-core-3.0.2.jar,
+			/libs/lucene/lucene-remote-3.0.3.jar,
+			/libs/lucene/lucene-queries-3.0.3.jar,
+			/libs/lucene/IKAnalyzer3.2.3Stable.jar,
+			/libs/webservice/cxf-2.2.4.jar,
+			/libs/webservice/XmlSchema-1.4.7.jar,
+			/libs/webservice/wsdl4j-1.6.2.jar,
+			/libs/bdb/je-4.1.7.jar
+ 	</value>
+	</property>
+	<property>
+		<name>mapred.child.java.opts</name>
+		<value>-Xmx256M</value>
+	</property>
+	<property>
+		<name>yxlib.thumb.kind</name>
+		<value>png</value>
+	</property>
+	<property>
+		<name>yxlib.openoffice.port</name>
+		<value>9527</value>
+		<description>openoffice service port</description>
+	</property>
+	<property>
+		<name>yxlib.daemon.port</name>
+		<value>9529</value>
+		<description>deamon thread port</description>
+	</property>
+	<property>
+		<name>yxlib.searcher.port</name>
+		<value>9530</value>
+		<description>deamon search port</description>
+	</property>
+	<property>
+		<name>yxlib.sdk.port</name>
+		<value>9627</value>
+		<description>sdk server port</description>
+	</property>
+	<property>
+		<name>mapred.job.reuse.jvm.num.tasks</name>
+		<value>2</value>
+	</property>
+	<property>
+		<name>mapred.task.timeout</name>
+		<value>7200000</value>
+	</property>
+	<property>
+		<name>yxlib.job.webservice.uri</name><!-- WARN: YOUR LOCAL IP,NOT LOCALHOST OR 127.0.0.1 -->
+		<value>http://127.0.0.1:8080/CloudDocLib/services/FileCallbackInterface</value><!-- ?wsdl -->
+		<description>yxlib job call back web service address</description>
+	</property>
+	<property>
+		<name>yxlib.thumb.width</name>
+		<value>120</value>
+	</property>
+	<property>
+		<name>yxlib.thumb.height</name>
+		<value>156</value>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.forcequit</name>
+		<value>true</value>
+		<description>unused</description>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.indexoptimize.interval</name>
+		<value>10080</value>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.pdf2swf.timeout</name>
+		<value>60</value>
+		<description>the time used by swftools to convert a pdf to swf(Unit: Min)</description>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.doc2pdf.timeout</name>
+		<value>10</value>
+		<description>the time used by openoffice to convert doc to pdf(Unit: Min)</description>
+	</property>
+
+	<property>
+		<name>yxlib.openoffice.lib.prefix</name>
+		<value>/opt/openoffice.org</value>
+	</property>
+	
+	<property>
+		<name>yxlib.jod.prefix</name>
+		<value>/usr/tools/jod</value>
+	</property>
+	
+	<property>
+		<name>yxlib.openoffice.home</name>
+		<value>/opt/openoffice.org3</value>
+	</property>
+	
+	<property>
+		<name>yxlib.openoffice.soffice.path</name>
+		<value>${yxlib.openoffice.home}/program/soffice</value>
+		<description>unused</description>
+	</property>
+	
+	<property>
+		<name>yxlib.openoffice.restart.waittime</name>
+		<value>120</value>
+		<description>unused</description>
+	</property>
+	
+	<property>
+		<name>yxlib.openoffice.restart.always</name>
+		<value>false</value>
+		<description>unused</description>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.basedir</name>
+		<value>/usr/tools/dcdaemon/</value>
+		<description>daemon thread work dir</description>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.jdkhome</name>
+		<value>/usr/java/jdk1.7.0_79/</value>
+		<description>the daemon thread jdk home</description>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.logsize</name>
+		<value>30</value>
+	</property>
+
+	<property>
+		<name>yxlib.dcdaemon.retry.forcefail</name>
+		<value>false</value>
+	</property>
+	
+	<property>
+		<name>yxlib.jobtrack.capacity</name>
+		<value>50</value>
+	</property>
+	
+	<property>
+		<name>yxlib.fileckeck.md5</name>
+		<value>false</value>
+	</property>
+	
+	<property>
+		<name>yxlib.dcdeamon.memory.min</name>
+		<value>1024</value>
+		<description>unit(M)</description>
+	</property>
+	
+	<property>
+		<name>yxlib.dcdeamon.memory.max</name>
+		<value>3072</value>
+		<description>unit(M),WARN: Need auto detect the system max avaliable jvm space</description>
+	</property>
+	
+	<property>
+		<name>yxlib.cache.index</name>
+		<value>true</value>
+	</property>
+	
+	<property>
+		<name>yxlib.dcdeamon.ignore.filetype</name>
+		<value>*.ceb</value>
+	</property>
+
+</configuration>
+

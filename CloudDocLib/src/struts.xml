@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" 
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<!-- 设置中文资源 -->
+	<constant name="struts.i18n.encoding" value="utf-8"></constant>
+	<package name="default" extends="json-default">
+		<!-- 设置全局返回值 -->
+		<global-results>
+			<result name="json" type="json">
+				<param name="enableGZIP"></param>
+				<param name="defaultEncoding">UTF-8</param>
+			</result>
+		</global-results>
+	</package>
+	<!-- http://localhost:8080/CloudDocLib/portal/filemgt/fileMgtAction -->
+	<package name="uploadForm" namespace="/portal/filemgt" extends="struts-default">
+		<action name="fileMgtAction" class="com.cdl.action.FileMgtAction" method="{1}">
+			<result name="submit_success">/index.jsp</result>
+		</action>
+	
+	</package>
+	
+	<package name="xngAction" namespace="/xng" extends="default">
+		<action name="xngAction" class="com.cdl.action.XngAction" method="{1}">
+		
+		</action>
+	</package>
+	
+	<package name="search" extends="default" namespace="/portal">
+		<action name="search!*" method="{1}" class="com.cdl.action.SearchAction">
+			<result name="search_result">/portal/search/search.jsp</result>
+		</action>
+	</package>
+	
+	
+	<include file="com/cdl/hadoop/dc/struts-dc.xml"></include>
+</struts>
