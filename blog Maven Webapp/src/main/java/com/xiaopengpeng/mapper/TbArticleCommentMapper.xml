@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaopengpeng.mapper.TbArticleCommentMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaopengpeng.pojo.TbArticleComment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="article_id" property="article_id" jdbcType="INTEGER" />
+    <result column="user_name" property="user_name" jdbcType="VARCHAR" />
+    <result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="father_comm_id" property="father_comm_id" jdbcType="INTEGER" />
+    <result column="like_count" property="like_count" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.xiaopengpeng.pojo.TbArticleComment" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, article_id, user_name, create_time, email, father_comm_id, like_count
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_article_comment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_article_comment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xiaopengpeng.pojo.TbArticleComment" >
+    insert into tb_article_comment (id, article_id, user_name, 
+      create_time, email, father_comm_id, 
+      like_count, content)
+    values (#{id,jdbcType=INTEGER}, #{article_id,jdbcType=INTEGER}, #{user_name,jdbcType=VARCHAR}, 
+      #{create_time,jdbcType=TIMESTAMP}, #{email,jdbcType=VARCHAR}, #{father_comm_id,jdbcType=INTEGER}, 
+      #{like_count,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaopengpeng.pojo.TbArticleComment" >
+    insert into tb_article_comment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="article_id != null" >
+        article_id,
+      </if>
+      <if test="user_name != null" >
+        user_name,
+      </if>
+      <if test="create_time != null" >
+        create_time,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="father_comm_id != null" >
+        father_comm_id,
+      </if>
+      <if test="like_count != null" >
+        like_count,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="article_id != null" >
+        #{article_id,jdbcType=INTEGER},
+      </if>
+      <if test="user_name != null" >
+        #{user_name,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null" >
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="father_comm_id != null" >
+        #{father_comm_id,jdbcType=INTEGER},
+      </if>
+      <if test="like_count != null" >
+        #{like_count,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaopengpeng.pojo.TbArticleComment" >
+    update tb_article_comment
+    <set >
+      <if test="article_id != null" >
+        article_id = #{article_id,jdbcType=INTEGER},
+      </if>
+      <if test="user_name != null" >
+        user_name = #{user_name,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null" >
+        create_time = #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="father_comm_id != null" >
+        father_comm_id = #{father_comm_id,jdbcType=INTEGER},
+      </if>
+      <if test="like_count != null" >
+        like_count = #{like_count,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xiaopengpeng.pojo.TbArticleComment" >
+    update tb_article_comment
+    set article_id = #{article_id,jdbcType=INTEGER},
+      user_name = #{user_name,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      email = #{email,jdbcType=VARCHAR},
+      father_comm_id = #{father_comm_id,jdbcType=INTEGER},
+      like_count = #{like_count,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaopengpeng.pojo.TbArticleComment" >
+    update tb_article_comment
+    set article_id = #{article_id,jdbcType=INTEGER},
+      user_name = #{user_name,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      email = #{email,jdbcType=VARCHAR},
+      father_comm_id = #{father_comm_id,jdbcType=INTEGER},
+      like_count = #{like_count,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaopengpeng.mapper.TbArticleMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaopengpeng.pojo.TbArticle" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="category" property="category" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="img_url" property="img_url" jdbcType="VARCHAR" />
+    <result column="read_count" property="read_count" jdbcType="INTEGER" />
+    <result column="like_count" property="like_count" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.xiaopengpeng.pojo.TbArticle" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, category, title, create_time, author, img_url, read_count, like_count
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <!-- 自己实现的 -->
+  <select id="getAllArticle" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_article
+  </select>
+  
+   <select id="getArticleByTitle" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_article
+    where title = #{articleName,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_article
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_article
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xiaopengpeng.pojo.TbArticle" >
+    insert into tb_article (id, category, title, 
+      create_time, author, img_url, 
+      read_count, like_count, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{category,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{create_time,jdbcType=TIMESTAMP}, #{author,jdbcType=VARCHAR}, #{img_url,jdbcType=VARCHAR}, 
+      #{read_count,jdbcType=INTEGER}, #{like_count,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaopengpeng.pojo.TbArticle" >
+    insert into tb_article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="category != null" >
+        category,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="create_time != null" >
+        create_time,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="img_url != null" >
+        img_url,
+      </if>
+      <if test="read_count != null" >
+        read_count,
+      </if>
+      <if test="like_count != null" >
+        like_count,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="category != null" >
+        #{category,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null" >
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="img_url != null" >
+        #{img_url,jdbcType=VARCHAR},
+      </if>
+      <if test="read_count != null" >
+        #{read_count,jdbcType=INTEGER},
+      </if>
+      <if test="like_count != null" >
+        #{like_count,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaopengpeng.pojo.TbArticle" >
+    update tb_article
+    <set >
+      <if test="category != null" >
+        category = #{category,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null" >
+        create_time = #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="img_url != null" >
+        img_url = #{img_url,jdbcType=VARCHAR},
+      </if>
+      <if test="read_count != null" >
+        read_count = #{read_count,jdbcType=INTEGER},
+      </if>
+      <if test="like_count != null" >
+        like_count = #{like_count,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xiaopengpeng.pojo.TbArticle" >
+    update tb_article
+    set category = #{category,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      author = #{author,jdbcType=VARCHAR},
+      img_url = #{img_url,jdbcType=VARCHAR},
+      read_count = #{read_count,jdbcType=INTEGER},
+      like_count = #{like_count,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaopengpeng.pojo.TbArticle" >
+    update tb_article
+    set category = #{category,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      author = #{author,jdbcType=VARCHAR},
+      img_url = #{img_url,jdbcType=VARCHAR},
+      read_count = #{read_count,jdbcType=INTEGER},
+      like_count = #{like_count,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

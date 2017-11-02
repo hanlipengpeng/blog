@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaopengpeng.mapper.TbFriendlyLinkMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaopengpeng.pojo.TbFriendlyLink" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="link_name" property="link_name" jdbcType="VARCHAR" />
+    <result column="link_url" property="link_url" jdbcType="VARCHAR" />
+    <result column="link_time" property="link_time" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, link_name, link_url, link_time
+  </sql>
+  
+  <!-- 手动添加的 -->
+  <select id="getAllFriendlyLinkMapper" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_friendly_link
+  </select>
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_friendly_link
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_friendly_link
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xiaopengpeng.pojo.TbFriendlyLink" >
+    insert into tb_friendly_link (id, link_name, link_url, 
+      link_time)
+    values (#{id,jdbcType=INTEGER}, #{link_name,jdbcType=VARCHAR}, #{link_url,jdbcType=VARCHAR}, 
+      #{link_time,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaopengpeng.pojo.TbFriendlyLink" >
+    insert into tb_friendly_link
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="link_name != null" >
+        link_name,
+      </if>
+      <if test="link_url != null" >
+        link_url,
+      </if>
+      <if test="link_time != null" >
+        link_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="link_name != null" >
+        #{link_name,jdbcType=VARCHAR},
+      </if>
+      <if test="link_url != null" >
+        #{link_url,jdbcType=VARCHAR},
+      </if>
+      <if test="link_time != null" >
+        #{link_time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaopengpeng.pojo.TbFriendlyLink" >
+    update tb_friendly_link
+    <set >
+      <if test="link_name != null" >
+        link_name = #{link_name,jdbcType=VARCHAR},
+      </if>
+      <if test="link_url != null" >
+        link_url = #{link_url,jdbcType=VARCHAR},
+      </if>
+      <if test="link_time != null" >
+        link_time = #{link_time,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaopengpeng.pojo.TbFriendlyLink" >
+    update tb_friendly_link
+    set link_name = #{link_name,jdbcType=VARCHAR},
+      link_url = #{link_url,jdbcType=VARCHAR},
+      link_time = #{link_time,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

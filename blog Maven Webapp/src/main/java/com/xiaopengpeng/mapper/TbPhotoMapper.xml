@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaopengpeng.mapper.TbPhotoMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaopengpeng.pojo.TbPhoto" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+    <result column="photo_url" property="photo_url" jdbcType="VARCHAR" />
+    <result column="photo_alt" property="photo_alt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, photo_url, photo_alt
+  </sql>
+  
+  <!-- 手动修改 -->
+  <select id="getAllPhoto" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_photo
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_photo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_photo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xiaopengpeng.pojo.TbPhoto" >
+    insert into tb_photo (id, create_time, photo_url, 
+      photo_alt)
+    values (#{id,jdbcType=INTEGER}, #{create_time,jdbcType=TIMESTAMP}, #{photo_url,jdbcType=VARCHAR}, 
+      #{photo_alt,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaopengpeng.pojo.TbPhoto" >
+    insert into tb_photo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="create_time != null" >
+        create_time,
+      </if>
+      <if test="photo_url != null" >
+        photo_url,
+      </if>
+      <if test="photo_alt != null" >
+        photo_alt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="create_time != null" >
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="photo_url != null" >
+        #{photo_url,jdbcType=VARCHAR},
+      </if>
+      <if test="photo_alt != null" >
+        #{photo_alt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaopengpeng.pojo.TbPhoto" >
+    update tb_photo
+    <set >
+      <if test="create_time != null" >
+        create_time = #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="photo_url != null" >
+        photo_url = #{photo_url,jdbcType=VARCHAR},
+      </if>
+      <if test="photo_alt != null" >
+        photo_alt = #{photo_alt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaopengpeng.pojo.TbPhoto" >
+    update tb_photo
+    set create_time = #{create_time,jdbcType=TIMESTAMP},
+      photo_url = #{photo_url,jdbcType=VARCHAR},
+      photo_alt = #{photo_alt,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
