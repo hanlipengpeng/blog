@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+       
+       <!-- 需要处理  自己重新写的注入 -->
+       
+       
+      
+      <!-- service的注入 -->
+      	<bean id="dcService" class="com.cdl.hadoop.dc.service.DCServiceImpl" init-method="init">
+      		<property name="fileMgtDao" ref="fileMgtDao"></property>
+      		<property name="hdfsOperation" ref="hdfsOperation"></property>
+      		<property name="jobSubmiter" ref="jobSubmiter"></property>
+      	</bean>
+      	
+      	<bean id="dcDeamonMangeService" class="com.cdl.hadoop.dc.service.DCDeamonMangeServiceImpl">
+      		<property name="jobSubmiter" ref="jobSubmiter"></property>
+      	</bean>
+      
+      
+      
+  	  <!-- job的注入 -->
+  	  <bean id="jobSubmiter" class="com.cdl.hadoop.dc.job.JobSubmiter">
+  	  	<property name="jobService" ref="jobService"></property>
+  	  </bean>
+  	  
+  	  <bean id="jobService" class="com.cdl.hadoop.dc.job.JobServiceImpl">
+      	<property name="jobJESupport" ref="jobJESupport"></property>
+      	<property name="internalSubmiter" ref="internalSubmiter"></property>
+      </bean>
+      
+      <bean id="jobJESupport" class="com.cdl.hadoop.dc.job.JobJESupport"></bean>
+  	  <bean id="internalSubmiter" class="com.cdl.hadoop.dc.job.InternalSubmiter"></bean>
+       
+       
+       
+       
+       <!-- model的实例化 -->
+      <bean id="taskStatus" class="com.cdl.hadoop.dc.model.TaskStatus"></bean> 
+      <bean id="workUnit" class="com.cdl.hadoop.dc.model.WorkUnit"></bean>
+      <bean id="yxFileMeta" class="com.cdl.hadoop.dc.model.YXFileMeta"></bean>
+</beans>

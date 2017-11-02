@@ -1,0 +1,4 @@
+.bd_dialog{border:2px solid #99c2e6;background:#c5def3 url(../../images/title_window_bg.gif) top repeat-x;;color:#333;overflow:hidden}
+.bd_dialog_title{line-height:24px; padding-top:5px;font-size:14px;font-weight:bold;float:left;overflow:hidden;margin:3px 10px; color:#314f69;}
+.bd_dialog_close{width:19px;height:19px;float:right;background:url(../../images/close.gif);overflow:hidden;margin:6px;cursor:pointer}
+.bd_tab_cont_s{border:1px solid #a5c8e7;margin-bottom:10px;margin-left:10px;margin-right:10px;margin-top:40px;background:#FFF}

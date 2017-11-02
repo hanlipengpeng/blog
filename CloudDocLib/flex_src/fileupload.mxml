@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns="*" creationComplete="init();">
+<mx:Script>
+<![CDATA[
+	import mx.core.EdgeMetrics;
+	import mx.utils.ObjectUtil;
+	import mx.controls.LinkButton;
+	import mx.collections.ArrayCollection;
+	import flash.net.FileReference;
+	import mx.controls.Alert;
+	import mx.events.CloseEvent;
+	import flash.events.*;
+	
+	private var file: FileReference;
+	
+	private var fileList: FileReferenceList = new FileReferenceList();
+	//允许上传的文件的类型数组 
+	private var allowFileTypes : Array;
+	//最大上传文件数
+	private var maxFiles:int=10;
+	//最大上传文件大小(M)
+	private var maxSize:Number=64;
+	//文件上传请求对象 
+	private var request: URLRequest = new URLRequest("http://localhost:8088/YXLIB/FileUploaded");
+
+	[Bindable] 
+	private var arr:ArrayCollection = new ArrayCollection(
+	                [{label:"a", data:"a"},{label:"b", data:"b"}, {label:"v", data:"v"}]);
+	//文件集                
+	[Bindable]
+	private var files :ArrayCollection = new ArrayCollection();
+	
+	/**
+	 * 初始化信息
+	 */ 
+	private function init(): void
+	{
+		Security.allowDomain("*");
+		fileList.addEventListener(Event.SELECT, onSelect);
+		viewStack.addEventListener(Event.RENDER,refreshMsg);
+		//file.addEventListener(Event.SELECT,selectHandle);
+		
+		/**
+		 *  初始化允许上传的文件类型
+		 */
+		var docTypes:FileFilter = new FileFilter("Documents", "*.pdf;*.doc;*.txt");
+		var imageTypes:FileFilter = new FileFilter("图片 (*.jpg, *.jpeg, *.gif,*.png)", "*.jpg; *.jpeg; *.gif; *.png");
+	    var textTypes:FileFilter = new FileFilter("文本文件(*.txt)","*.txt;");
+	    var officeType:FileFilter = new FileFilter("Office文件(*.doc), *.xls","*.doc; *.xls");
+	    var anyType:FileFilter = new FileFilter("所有文件(*.*)","*.*");
+	    allowFileTypes = new Array(docTypes,officeType, textTypes,imageTypes,anyType);
+	}
+
+	private function fileUploadCompletedHandle(e:DataEvent):void
+	{
+		var f :FileReference = FileReference(e.target) ;
+		Alert.show("uploadCompleteData:"+e.data.toString());
+		for(var i:int = 0 ;i<files.length;i++)
+		{
+			var fileName = FileReference(files[i].fileRefrence).name;
+			if(f.name == fileName)
+			{
+				files[i].hasUploadFlag = 'Y';
+				this.uploadFile();
+			    break;
+			}
+		}
+	}
+	/**
+	 * 添加文件处理
+	 * 
+	 */ 
+	public function addFiles(e:Event): void
+	{
+		//Alert.show(e.target.label);
+	    try
+	    {
+			var success:Boolean = fileList.browse(this.allowFileTypes);
+	    }
+	    catch (error:Error)
+	    {
+	    	trace("Unable to browse for files."+error.toString());
+	    }
+	}
+	
+	/**
+	 * 文件按钮选择处理
+	 */
+	private function onSelect(e: Event): void
+	{
+		for each(var file:FileReference in fileList.fileList)
+		{
+			var flag:Boolean = checkSelctedFile(file);
+			/*
+			* 如果已存在在文件列表中，则不作处理
+			*/
+			if(flag)
+			{
+				continue;
+			}
+			else
+			{
+				var o :Object = new Object();
+				o.fileName = file.name;
+				var fileSize :Number = Math.round(file.size);
+				
+				if(fileSize>this.maxSize*1024*1024)
+				{
+					Alert.show("请上传大小小于64M的附件","提示");
+					return;
+				}
+				
+				/*
+				* 文件小于1M，显示K单位。
+				*/
+				if(fileSize/1024<1024)
+				{
+					o.fileSize =(fileSize/(1024)).toString().slice(0,4)+"K";
+				}
+				else
+				{
+					o.fileSize = (fileSize/(1024*1024)).toString().slice(0,4)+"M";
+				}
+				
+				o.fileRefrence = file;
+				files.addItem(o);
+			}
+		}
+		
+		viewStack.selectedIndex=1;
+		refreshText();
+	}
+	
+	/**
+	 * 校验选择的文件是否已在文件列表中
+	 */ 
+	private function checkSelctedFile(f:FileReference):Boolean
+	{
+		for(var i:int = 0 ;i<files.length;i++)
+		{
+			var tmp:FileReference = FileReference(files[i].fileRefrence);
+			if(tmp.name==f.name)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * 文件上传事件处理
+	 * 
+	 */
+	private function uploadFile():void
+	{
+		this.viewStack.selectedIndex = 2;
+		try
+		{
+			for(var i:int = 0 ;i<files.length;i++)
+			{
+				var flag :String= String(files[i].hasUploadFlag);
+				if(flag=='' || flag==null || flag=='undefined')
+				{
+					file = FileReference(files[i].fileRefrence);
+					file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,fileUploadCompletedHandle);
+				    file.upload(request);
+				    break;
+				}
+			}
+		}
+		catch (error:Error)
+		{
+			trace("上传失败");
+		}
+	}
+	
+	/**
+	 * 上传文件按钮点击事件处理
+	 * 
+	 */ 
+	private function btnUploadClick(): void
+	{
+		
+	    try
+	    {
+			var success:Boolean = fileList.browse(allowFileTypes);
+			//file.browse(allowFileTypes);
+	    }
+	    catch (error:Error)
+	    {
+	        trace("Unable to browse for files."+error.toString());
+	    }
+	}
+	
+	/**
+	 * 更新文件统计文本信息
+	 */ 
+	public function refreshText():void
+	{
+		//重新统计附件大小，将原来的信息清0
+		var fileSize:Number=0;
+		for(var i:int=0;i<files.length;i++)
+		{
+			fileSize+=Math.round(FileReference(files[i].fileRefrence).size);
+		}
+		
+		var s :String = "";
+		if(fileSize/1024<1024)
+		{
+			s = files.length+"份文档等待上传，总计："+(fileSize/(1024)).toString().slice(0,4)+"K";
+		}
+		else
+		{
+			s = files.length+"份文档等待上传，总计："+(fileSize/(1024*1024)).toString().slice(0,4)+"M";
+		}
+		
+		msg.text = s ;
+	}
+	
+	/**
+	 * 刷新文件统计文本信息
+	 */ 
+	private function refreshMsg(e:Event):void
+	{
+		refreshText();
+	}
+	
+	/**
+	 * 删除文件
+	 */ 
+	public function deleteFile(e:Event):void
+	{
+		var o:Object=selectFileGrid.selectedItem;
+		var index :Number = files.getItemIndex(o);
+		files.removeItemAt(index);
+		refreshText();
+		/**
+		 * 文件数目为0时，切换到原上传文件界面。
+		 */ 
+		if(files.length==0)
+		{
+			viewStack.selectedIndex = 0;
+		}
+	}
+
+	
+]]>
+</mx:Script>
+<mx:ViewStack id="viewStack">
+<mx:Canvas width="100%" height="100%" fontSize="10">
+	<mx:VBox width="100%" horizontalAlign="center" verticalAlign="middle">
+		<mx:Panel width="800" height="400" title="文件批量上传"  horizontalAlign="center" verticalAlign="middle">
+			<mx:Button width="160" height="40" name="btnUpload" label="上传文档"  id="btnUpload" click="btnUploadClick()" />
+			<mx:Label text="每次最多批量上传10份文档，每份文档不超多64M" />
+		</mx:Panel>
+	</mx:VBox>
+</mx:Canvas>
+
+<mx:Canvas width="100%" height="100%" x="10" y="170" fontSize="10">
+	<mx:VBox width="100%" horizontalAlign="center">
+		<mx:Panel width="600" height="400"  title="文件批量上传">
+        <mx:DataGrid id="selectFileGrid"
+					 dataProvider="{files}" 
+					 editable="false"
+					 width="100%" height="100%" >
+			<mx:columns>
+				<mx:DataGridColumn headerText="选择的文件" dataField="fileName"  width="260"/>
+				<mx:DataGridColumn headerText="文件大小" dataField="fileSize" width="100" />
+				<mx:DataGridColumn headerText="状态" width="150" paddingLeft="2" editable="false">
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:HBox width="100%" horizontalGap="2" paddingLeft="0" paddingRight="0" horizontalScrollPolicy="off">
+							     <mx:LinkButton id="dirDeleteBtn" width="60" click="outerDocument.deleteFile(event)" label="删除" toolTip="从列表中删除">
+							      <mx:Script>
+							       <![CDATA[
+							        import mx.collections.ArrayCollection;
+							        import mx.controls.DataGrid;
+							       
+							        private function deleteItem(event:MouseEvent):void {
+								    	var grid:Object = event.target.parent.parent.parent;
+								        var dp:ArrayCollection = ArrayCollection(grid.dataProvider);
+								        var index:int = dp.getItemIndex(data);
+								        dp.removeItemAt(index);
+								        outerDocument.refreshText();
+								        grid.parent.refresh();
+							        }
+							       ]]>
+							      </mx:Script>
+							     </mx:LinkButton>
+							</mx:HBox>
+						</mx:Component> 
+					</mx:itemRenderer> 
+				</mx:DataGridColumn>			
+			</mx:columns>
+		</mx:DataGrid> 
+		<mx:HBox width="100%" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0">
+			<mx:Form width="100%" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0">
+				<mx:HBox paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0">
+					<mx:Button label="添加文件" click="addFiles(event);"/>
+					<mx:Button label="上传" click="uploadFile();"/>
+				</mx:HBox >
+			</mx:Form>
+			<mx:Form width="50%" paddingBottom="0" paddingTop="0" paddingLeft="200">
+				<mx:Text id="msg" text="0份文档等待上传，总计：0K" fontSize="12" fontFamily="Arial" />
+			</mx:Form>
+		</mx:HBox>
+    </mx:Panel>
+	</mx:VBox>
+</mx:Canvas>
+<mx:Canvas width="100%" height="100%" x="10" y="170" fontSize="10">
+	<mx:VBox width="100%" horizontalAlign="center">
+		<mx:Panel width="600" height="400"  title="文件批量上传">
+        <mx:DataGrid id="fileGrid"
+					 dataProvider="{files}" 
+					 editable="false"
+					 width="100%" height="100%" >
+			<mx:columns>
+				<mx:DataGridColumn headerText="选择的文件" dataField="fileName"  width="260"/>
+				<mx:DataGridColumn headerText="文件大小" dataField="fileSize" width="100" />
+				<mx:DataGridColumn headerText="状态" width="200" paddingLeft="2" editable="false">
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:Canvas  width="100%" height="100%">
+							<mx:ViewStack id="vs"  width="100%" height="100%">
+								<mx:Canvas id="cs" width="100%" height="100%" fontSize="10">
+									<mx:HBox width="100%" horizontalGap="2" paddingLeft="0" paddingRight="0" horizontalScrollPolicy="off">
+										<mx:ProgressBar id="progressBar" width="80%" 
+									      minimum="0" maximum="100" source="{data.fileRefrence}" 
+									      labelPlacement="center" progress="progressBar.label='%3%%';"
+									      label="%3%%">
+									     </mx:ProgressBar>
+									     <mx:LinkButton id="cancelUploadBtn" width="80" toolTip="取消上传" click="cancelUploadBtnHandle();" label="cancel">
+									      <mx:Script>
+									       <![CDATA[
+									        private function cancelUploadBtnHandle():void{
+									        	data.fileRefrence.cancel();
+									        	vs.selectedIndex = 1;
+									        }
+									       ]]>
+									      </mx:Script>
+									    </mx:LinkButton>
+									</mx:HBox>
+								</mx:Canvas>
+								<mx:Canvas id="cs2" width="100%" height="100%" fontSize="10">
+									<mx:HBox width="100%" horizontalGap="2" paddingLeft="0" paddingRight="0" horizontalScrollPolicy="off">
+										<mx:LinkButton id="reUploadBtn" width="50" toolTip="重新上传" click="reUpload();" label="reload">
+									      <mx:Script>
+									       <![CDATA[
+									        private function reUpload():void{
+									        	
+									        }
+									       ]]>
+									      </mx:Script>
+									    </mx:LinkButton>
+									    <mx:LinkButton id="uploadOtherBtn" width="50" toolTip="上传其他" click="uploadOther(event);" label="upother">
+									      <mx:Script>
+									       <![CDATA[
+									        private function uploadOther(event:MouseEvent):void{
+									        	//var grid:Object = event.target.parent.parent.parent.parent.parent.parent;
+										        //var dp:ArrayCollection = ArrayCollection(grid.dataProvider);
+										        //var index:int = dp.getItemIndex(data);
+										        //dp.removeItemAt(index);
+										        outerDocument.addFiles(event);
+										        reUploadBtn.label  = "11";
+									        }
+									       ]]>
+									      </mx:Script>
+									    </mx:LinkButton>
+									    <mx:LinkButton id="deleteBtn" width="50" click="deleteItems(event)" label="giveup" toolTip="从列表中删除">
+									      <mx:Script>
+									       <![CDATA[
+									        import mx.collections.ArrayCollection;
+									        import mx.controls.DataGrid;
+									        /**
+									        * 删除当前行数据
+									        */ 
+									        private function deleteItems(event:MouseEvent):void {
+										    	var grid:Object = event.target.parent.parent.parent.parent.parent.parent;
+										        var dp:ArrayCollection = ArrayCollection(grid.dataProvider);
+										        var index:int = dp.getItemIndex(data);
+										        dp.removeItemAt(index);
+									        }
+									       ]]>
+									      </mx:Script>
+									    </mx:LinkButton>
+									</mx:HBox>
+								</mx:Canvas>
+							</mx:ViewStack>
+							</mx:Canvas>
+						</mx:Component> 
+					</mx:itemRenderer> 
+				</mx:DataGridColumn>			
+			</mx:columns>
+		</mx:DataGrid> 
+		<mx:HBox width="100%" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0">
+			<mx:Form width="50%" paddingBottom="0" paddingTop="0" paddingLeft="200">
+				<mx:Text id="msgs" text="" fontSize="12" fontFamily="Arial" />
+			</mx:Form>
+		</mx:HBox>
+    </mx:Panel>
+	</mx:VBox>
+</mx:Canvas>
+</mx:ViewStack>
+
+</mx:Application>

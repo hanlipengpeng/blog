@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org/DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="libfileinfo">
+	
+	<select id="queryFileByHdfsId" parameterClass="String" resultClass="com.cdl.entity.LibFileTransTemp">
+		select SID as sid,
+		HDFS_FILE_ID as hdfsFileId,
+		FILE_TITLE as fileTitle,
+		FILE_DESC as fileDesc,
+		FILE_KEYWORD as fileKeyword,
+		UPLOAD_BY as uploadBy,
+		UPLOAD_DATE as uploadDate,
+		FILE_CATEGORY_ID as fileCategoryId,
+		FILE_STATUS as fileStatus,
+		CREATED_BY as createdBy,
+		CREATED_DATE as createdDate,
+		LAST_UPDATED_BY as lastUpdatedBy,
+		LAST_UPDATED_DATE as lastUpdatedDate,
+		ENABLED_FLAG as enabledFlag,
+		FILE_EXT_NAME as fileExtName,
+		RETRY_TIME as retryTime,
+		EXCEPTION_MSG as exceptionMsg 
+		FROM LIB_FILE_TRANS_TEMP
+		WHERE HDFS_FILE_ID=#hdfsFileId#
+	</select>
+	
+	
+	<!-- 向HDFS_FILE_INFO表里面插入数据 -->
+	<insert id="saveHdfsFileInfo" parameterClass="com.cdl.entity.HdfsFileInfo">
+		insert into HDFS_FILE_INFO(SID,
+		FILE_REAL_NAME,
+		FILE_NAME,
+		FILE_EXT_NAME,
+		FILE_PATH,
+		FILE_SIZE,
+		FILE_REPLICATION_NUM,
+		FILE_BLOCK_NUM,
+		FILE_UPLOAD_DATE,
+		CREATED_BY,
+		CREATED_DATE,
+		LAST_UPDATED_BY,
+		LAST_UPDATED_DATE,
+		ENABLED_FLAG,
+		FILE_MD5) VALUES(#sid#,#fileRealName#,#fileName#,#fileExtName#,#filePath#,#fileSize#,#fileReplicationNum#,#fileBlockNum#,#fileUploadDate#,#createdBy#,#createdDate#,#lastUpdatedBy#,#lastUpdatedDate#,#enabledFlag#,#fileMd5#)
+	</insert>
+	
+	
+	<!-- 向LIB_FILE_TRANS_TEMP表里面插入数据 -->
+	<insert id="saveLibTransTemp" parameterClass="com.cdl.entity.LibFileTransTemp">
+		insert into LIB_FILE_TRANS_TEMP(
+		SID,
+		HDFS_FILE_ID,
+		FILE_TITLE,
+		FILE_DESC,
+		FILE_KEYWORD,
+		UPLOAD_BY,
+		UPLOAD_DATE,
+		FILE_CATEGORY_ID,
+		FILE_STATUS,
+		CREATED_BY,
+		CREATED_DATE,
+		LAST_UPDATED_BY,
+		LAST_UPDATED_DATE,
+		ENABLED_FLAG,
+		FILE_EXT_NAME,
+		RETRY_TIME,
+		EXCEPTION_MSG) values (#sid#,#hdfsFileId#,#fileTitle#,#fileDesc#,#fileKeyword#,#uploadBy#,#uploadDate#,#fileCategoryId#,#fileStatus#,#createdBy#,#createdDate#,#lastUpdatedBy#,#lastUpdatedDate#,#enabledFlag#,#fileExtName#,#retryTime#,#exceptionMsg#)
+	</insert>
+	
+	
+	<!-- 更新LIB_FILE_TRANS_TEMP表 -->
+	<update id="saveOrUpdateFileTransTemp" parameterClass="com.cdl.entity.LibFileTransTemp">
+		update LIB_FILE_TRANS_TEMP set
+		FILE_STATUS =#fileStatus#,
+		FILE_TITLE = #fileTitle#,
+		FILE_DESC = #fileDesc#,
+		FILE_KEYWORD = #fileKeyword#,
+		FILE_CATEGORY_ID = #fileCategoryId#
+		where SID=#sid#
+	</update>
+	
+	<select id="queryHdfsFileInfoById" parameterClass="String" resultClass="com.cdl.entity.HdfsFileInfo">
+		select  SID as sid,
+		FILE_REAL_NAME as fileRealName,
+		FILE_NAME as fileName,
+		FILE_EXT_NAME as fileExtName,
+		FILE_PATH as filePath,
+		FILE_SIZE as fileSize,
+		FILE_REPLICATION_NUM as fileReplicationNum,
+		FILE_BLOCK_NUM as fileBlockNum,
+		FILE_UPLOAD_DATE as fileUploadDate,
+		CREATED_BY as createdBy,
+		CREATED_DATE as createdDate,
+		LAST_UPDATED_BY as lastUpdatedBy,
+		LAST_UPDATED_DATE as lastUpdatedDate,
+		ENABLED_FLAG as enabledFlag,
+		FILE_MD5 as fileMd5 from HDFS_FILE_INFO where SID=#sid#
+	</select>
+	
+	
+	
+	
+</sqlMap>

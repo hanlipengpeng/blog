@@ -1,0 +1,30 @@
+.nav{height:42px;}
+.album-info{width:698px;margin:12px 0 0 8px;}
+.album-title{font-family:"黑体";font-size:20px;color:#014a8f;font-weight:normal;padding-bottom:10px;}
+.album-info .album-author{line-height:100%;padding-bottom:8px;}
+.album-info .album-des{line-height:200%;padding-top:5px;}
+.album-count{line-height:30px;float:left;padding-bottom:8px;}
+.album-count span{padding-right:10px;color:#ff8400;font-weight:bold;margin-right:20px;}
+#rateContainerValue span{margin-right:0;}
+.album-count p{float:left;}
+.album-author{clear:both;line-height:30px;}
+.album-info .album-author label{color:#858585;padding:0;font-weight:normal;}
+.album-info label{font-weight:bold;padding-right:5px;}
+.album-info p{line-height:250%;}
+.album-line{border-bottom:1px dashed #ccc;margin:15px 0;}
+#albumDocs td{line-height:250%;}
+.creatDoc{margin-left:10px;}
+.album-holder{padding:0;}
+.album-input-text{width:378px;}
+.score{font-size:20px;font-style:italic;}
+#rateScore{padding-right:10px;}
+.album-author span{margin-right:20px;}
+.creatDoc{width:68px;height:19px;background:url(http://img.baidu.com/img/iknow/docshare/album_btns.gif) no-repeat 1px -116px;float:left;}
+.doc-t{padding-right:40px;}
+.center{text-align:center;}
+#docsinput p{font-size:12px;padding:0 10px;text-align:left;}
+#popBody .form-submit{padding-left:160px;}
+#docs{height:0;line-height:0;}
+.album-count .rateCount{padding:0;color:#858585;*line-height:200%;}
+.album-count .rateCount span{padding:0;margin:0;font-weight:normal;}
+#rateContainerValue{*line-height:210%;_padding:1px;}

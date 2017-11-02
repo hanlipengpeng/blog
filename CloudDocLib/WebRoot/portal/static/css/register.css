@@ -1,0 +1,281 @@
+form {
+	MARGIN: 0px;
+	PADDING: 0px;
+}
+
+body {
+	margin: 4px 8px 0 0
+}
+
+td {
+	font-size: 12px;
+	line-height: 18px
+}
+
+a:link {
+	color: #261cdc
+}
+
+a:visited {
+	color: #261cdc
+}
+
+a.bluelink:link {
+	color: #0033cc
+}
+
+a.bluelink:hover {
+	color: #0033cc
+}
+
+a.bluelink:visited {
+	color: #800080
+}
+
+.f14 {
+	font-size: 14px;
+	line-height: 20px
+}
+
+.p14 {
+	font-size: 14px
+}
+
+.pad10L {
+	padding-left: 10px
+}
+
+.i {
+	font-size: 16px;
+	font-family: arial
+}
+
+a.top {
+	font-family: arial
+}
+
+a.top:link {
+	color: #0000cc;
+	text-decoration: underline
+}
+
+a.top:visited {
+	color: #0000cc;
+	text-decoration: underline
+}
+
+a.top:active {
+	color: #0000cc;
+	text-decoration: underline
+}
+
+.c {
+	color: #7777CC
+}
+
+a.c {
+	color: #7777CC
+}
+
+a.c:visited {
+	color: #7777CC
+}
+
+.ft {
+	text-align: center;
+	height: 20px;
+	padding-top: 2px;
+	font-size: 12px;
+	color: #777777;
+	font-family: Arial
+}
+
+.input {
+	height: 18px
+}
+
+.item {
+	font-size: 12px;
+	margin-top: 0px;
+	padding-top: 0px;
+	text-align: left;
+}
+
+.item_title {
+	font-weight: bold;
+}
+
+.item_desc {
+	padding-left: 74px;
+	margin-top: 1px;
+	color: #666;
+}
+
+.item_error {
+	padding-left: 74px;
+	margin-top: 1px;
+	color: #FF0000;
+	height: 14px;
+	display: none;
+}
+
+.item_green {
+	color: #008000;
+}
+
+.item_input {
+	height: 20px;
+	vertical-align: top;
+}
+
+#ft {
+	clear: both;
+	line-height: 20px;
+	background: #E6E6E6;
+	text-align: center;
+	width: 650px;
+	margin: auto auto;
+}
+
+#ft,#ft * {
+	color: #77C;
+	font-size: 12px;
+	font-family: Arial
+}
+
+body {
+	text-align: center;
+	font-family: 宋体;
+	margin: 0
+}
+
+.BGL {
+	background-color: #D9F0F0;
+	padding-left: 10px
+}
+
+.p14 {
+	font-size: 14px;
+}
+
+#freg {
+	width: 520px
+}
+
+a img {
+	border: 0;
+}
+
+.passTips {
+	width: 415px;
+	position: absolute;
+	background-color: #fff;
+}
+
+.passTips td {
+	font: 400 12px/ 20px arial;
+}
+
+.tl {
+	background: url(/img/passport/tl.gif) no-repeat 0;
+	width: 12px;
+	height: 40px;
+}
+
+.tc {
+	background: url(/img/passport/tc.gif) repeat-x;
+	vertical-align: top;
+	padding-left: 110px;
+}
+
+.tr {
+	width: 35px;
+	background: url(/img/passport/tr.gif) 0 no-repeat;
+	text-align: center;
+}
+
+.tr img {
+	margin-top: 10px;
+}
+
+.ml {
+	background: url(/img/passport/mlline.gif) repeat-y;
+}
+
+.mr {
+	background: url(/img/passport/mrline.gif) repeat-y;
+}
+
+.mc {
+	background-color: #effdfd;
+}
+
+.bl {
+	background: url(/img/passport/bl.gif) no-repeat;
+	height: 13px;
+}
+
+.bc {
+	background: url(/img/passport/bc.gif) repeat-x;
+}
+
+.br {
+	background: url(/img/passport/br.gif) no-repeat;
+}
+
+.tlogo {
+	background: transparent;
+}
+
+label {
+	width: 90px;
+	display: block;
+	float: left;
+	font-weight: bold;
+}
+
+.item_tit2 {
+	float: left;
+	width: 70px;
+	margin-top: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 4px;
+}
+
+.item_tit2 div {
+	float: right;
+	width: 14px;
+	margin: 0;
+}
+
+.item_tit2 div.item_tit {
+	float: left;
+	width: 56px;
+	margin: 0;
+}
+
+#sex .item_tit2 {
+	margin-top: 2px;
+}
+
+#verifycode .item_tit2 {
+	margin-top: 21px;
+}
+
+#btn_submit {
+	width: 60px;
+	font-size: 14px
+}
+
+.agree {
+	margin: 10px 0;
+}
+
+.tlogo {
+	width: 480px;
+	height: 60px;
+	font-size: 12px;
+	color: #666;
+	border: 1px solid #7F9DB9;
+}

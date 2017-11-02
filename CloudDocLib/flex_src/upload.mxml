@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns="*" creationComplete="init();" width="695" height="200" backgroundColor="#ffffff" backgroundAlpha="1" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0">
+<mx:Script source="upload.as" />
+<mx:Style source="themes/wk_css.css" />
+<mx:ViewStack id="viewStack" width="100%" height="100%" fontStyle="normal" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0" backgroundAlpha="1" backgroundColor="#ffffff">
+	<mx:Canvas width="100%" height="100%">
+		<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle"  paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0" >
+			<mx:Panel width="695" height="200" title="文件批量上传" headerHeight="0"  horizontalAlign="center" verticalAlign="middle" styleName="CanvasForm">
+				<mx:Button width="160" height="46" name="btnUpload" label="" click="btnUploadClick()"  id="btnUpload" styleName="uploadButton" useHandCursor="true" buttonMode="true" mouseChildren="false" />
+				<mx:Label text="每次最多批量上传10份文档，每份文档不超过64M" />
+			</mx:Panel>
+		</mx:VBox>
+	</mx:Canvas>
+	
+	<mx:Canvas id="ids1" width="100%" height="100%" >
+		<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
+		<mx:Panel width="695" title="文件批量上传" headerHeight="0" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" styleName="CanvasForm">
+	        <mx:Grid id="fileGrid" width="100%" verticalGap="2" horizontalGap="2">
+				<mx:GridRow height="30" width="100%" styleName="UploadTabTitle" >
+					<mx:GridItem width="380" verticalAlign="middle">
+						<mx:Label text="选择的文件" paddingLeft="20" />
+					</mx:GridItem>
+					<mx:GridItem width="150" verticalAlign="middle">
+						<mx:Label width="150" text="文件大小" textAlign="center" />
+					</mx:GridItem>
+					<mx:GridItem width="115" verticalAlign="middle" horizontalAlign="center">
+						<mx:Label width="115" text="移除" textAlign="center" />
+					</mx:GridItem>
+				</mx:GridRow>
+				<!--<mx:GridRow height="34" width="100%" styleName="UploadTabList" verticalAlign="middle">
+					<mx:GridItem width="380" paddingLeft="20"  verticalAlign="middle">
+						<mx:Image source="themes/skin_images/doc_ico/doc.png" />
+						<mx:Label text="北京政务移动门户验收通过新闻.doc" fontWeight="bold" />
+					</mx:GridItem>
+					<mx:GridItem width="150" verticalAlign="middle">
+						<mx:Label width="150" text="428 KB" textAlign="center"  />
+					</mx:GridItem>
+					<mx:GridItem width="120" textAlign="center" verticalAlign="middle" horizontalAlign="center">
+						<mx:Button label="" styleName="DocDeleteBut" width="16" height="16" useHandCursor="true" buttonMode="true" mouseChildren="false"/>
+					</mx:GridItem>
+				</mx:GridRow>-->
+	        </mx:Grid>
+			<mx:HBox width="100%" height="48" styleName="UploadTabFoot" verticalAlign="middle" horizontalGap="0">
+					<mx:Button label="" styleName="addDocBut" click="addFiles(event);" width="125" height="32" enabled="{files.length!=maxFiles}" />
+					<mx:Spacer width="100%" />
+					<mx:Text  id="msgFileNum" text="0 份" fontSize="12"  color="red" fontWeight="bold" />
+					<mx:Text id="msg" text="文档等待上传，总计：" fontSize="12"  />
+					<mx:Text  id="msgFileSize" text="0 KB" fontSize="12"  color="red" fontWeight="bold" />
+			</mx:HBox>
+			<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" borderStyle="none" 
+							paddingBottom="5" paddingTop="15" paddingLeft="0" paddingRight="0">
+				<mx:Button width="126" height="35" label="" click="uploadFiles();" styleName="StartUploadBut" useHandCursor="true" buttonMode="true" mouseChildren="false"/>
+			</mx:HBox>
+	    </mx:Panel>
+		</mx:VBox>
+	</mx:Canvas>
+	<mx:Canvas id="ids2" width="100%" height="100%" fontSize="12" fontStyle="normal" paddingBottom="10" paddingTop="10" paddingLeft="10" paddingRight="10">
+		<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="top" >
+			<mx:Panel width="695" title="文件批量上传" headerHeight="0" styleName="CanvasForm">
+				<mx:HBox width="100%" height="20" horizontalAlign="left" horizontalGap="0" >
+					<mx:Label text="您可以点击某个文件，跳到对应的区域" />
+					<mx:Label text="输入文档基本信息" color="#ff4e06" />
+				</mx:HBox>
+		        <mx:Grid id="uploadFileGrid" width="100%" verticalGap="2" horizontalGap="2">
+					<!--<mx:GridRow height="40" width="100%" styleName="UploadTabList">
+						<mx:GridItem width="380" paddingLeft="20"  verticalAlign="middle">
+							<mx:Image source="themes/skin_images/doc_ico/word.png" />
+							<mx:Label text="北京政务移动门户验收通过新闻.doc" fontWeight="bold" />
+						</mx:GridItem>
+						<mx:GridItem width="300" verticalAlign="middle">
+							<mx:Image source="themes/skin_images/success.png" />
+							<mx:Text text="文档成功上传成功，请填写文档信息" fontSize="12" color="#1c8f00" />
+						</mx:GridItem>
+					</mx:GridRow>-->
+				</mx:Grid>
+				<mx:HBox width="100%" height="40" styleName="UploadTabFoot" verticalAlign="middle" horizontalGap="2">
+					<mx:Text text="所有文档上传完毕，请填写下方的文档信息" fontSize="12" color="#00468b" />
+					<mx:Spacer width="100%" />
+					<mx:Image source="themes/skin_images/uploading.png" />
+					<mx:Text id="uploadingNumId" text="正在上传：0份" fontSize="12" color="#00468b" />
+					<mx:Spacer width="16" />
+					<mx:Image source="themes/skin_images/success.png" />
+					<mx:Text id="uploadSuccessNumId" text="成功上传：0份" fontSize="12" color="#00468b" />
+					<mx:Spacer width="16" />
+					<mx:Image source="themes/skin_images/defeated.png" />
+					<mx:Text id="uploadFailureNumId" text="失败上传：0份" fontSize="12" color="#00468b" />
+			</mx:HBox>
+		    </mx:Panel>
+		</mx:VBox>
+	</mx:Canvas>
+</mx:ViewStack>
+<mx:HTTPService id="jspServlet" url="../../jspServlet"       
+        result="servletResultHandler(event)"     
+        fault="servletFaultHandler(event)"     
+        resultFormat="text"     
+        method="POST"     
+        useProxy="false"    
+        showBusyCursor="true"/>
+</mx:Application>

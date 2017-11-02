@@ -1,0 +1,50 @@
+body
+{
+	background:url(../../../images/iknow/docshare/album-line.jpg) 
+	repeat-x left 122px;
+}
+.nav{height:42px;}
+.pop_btn_short
+{
+	color:#004a8f;
+	height:30px;
+	background:url("../../../images/iknow/docshare/bg_popbtn.gif") no-repeat scroll 0 -37px transparent;
+}
+.album-holder{padding:22px 0 0 42px;}
+.album-line{border-bottom:1px dashed #CCC;margin-top:10px;}
+.album-holder dl{width:auto;clear:both;float:none;overflow:hidden;}
+.album-holder dt{font-size:14px;float:left;width:55px;text-align:right;line-height:30px;}
+.album-holder dd{float:left;margin-top:0;text-align:left;margin-left:10px;font-size:12px;display:inline;position:relative;}
+.album-holder dd .album-input-text{*float:left;}
+.form-title .album-input-text{font-size:14px;}
+.album-holder .form-doc dd p{width:auto;*float:left;*width:358px;}
+.album-holder dd p{*clear:both;}
+.album-input-text{width:398px;border:1px solid #a9bac5;background:#fff;height:24px;line-height:24px;font-size:12px;overflow:hidden;text-indent:5px;}
+.form-sumary .album-input-text{height:117px;padding:5px;line-height:17px;text-indent:0;width:388px;*width:390px;}
+#classTableLevel h5{margin:0;padding-bottom:15px;text-align:left;}
+#confirmHolder{margin-top:15px;}
+#selectContainer{text-align:left;}
+.class-table{margin-right:4px;width:140px;}
+.form-category .album-input-text{width:auto;padding:2px 8px 0 2px;float:left;*padding:4px 8px 0 2px;}
+.form-category dd{padding-bottom:20px;}
+.form-category .error-tip{float:left;padding-left:10px;line-height:26px;padding-top:1px;*padding-top:3px;}
+.album-focus{background:#f4f9fc;}
+.clearfix{list-style:none;margin-top:8px;width:400px;}
+.reco-kw{float:left;line-height:18px;margin-bottom:0;}
+.clearfix li{float:left;margin:0 8px 5px 0;white-space:nowrap;}
+.clearfix li a{border-bottom:1px solid #B8D8EE;border-right:1px solid #B8D8EE;display:block;float:left;padding:2px;background:#F4F9FC;border-color:#CCC;color:#666;text-decoration:none;}
+.guide p,.guide h2{margin-bottom:10px;}
+.guide p.last{margin-bottom:0;}
+.input-focus{background:#f5f9fd;}
+.error-tip{color:red;line-height:20px;height:20px;}
+.input-error{background-color:#FEF5F5;border-color:#D5060D;}
+.icon-tip{position:absolute;width:20px;height:25px;right:-30px;top:5px;}
+.init-input{color:#ccc;}
+.album-icon{background:url(../../../images/iknow/docshare/album-icon.gif) repeat-x top left;width:17px;height:14px;}
+#addToStore{float:left;}
+#rateContainer{float:left;padding:4px 10px;color:orange;font-weight:bold;}
+.red_flag{color:red;padding:0 3px;}
+.multi-list-moudle .f-blue a{font-size:12px;}
+#cate-class-box{float:left;*margin-top:3px;line-height:28px;}
+#albumDocs .doc-f a{font-size:14px;}
+.form-category .album-input-text{border:none;}

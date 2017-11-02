@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+       
+       <!-- ACTION -->
+       <bean id="xngAction" class="com.cdl.action.XngAction" scope="request">
+       	<property name="dcDeamonMangeService" ref="dcDeamonMangeService"></property>
+       </bean>
+       
+       <bean id="search" class="com.cdl.action.SearchAction" scope="request">
+       	<property name="fileSearchService" ref="fileSearchService"></property>
+       </bean>
+       
+       
+	
+	
+	<!-- service的配置 -->
+	<bean id="fileMgtService" class="com.cdl.service.FileMgtServiceImpl">
+		<property name="hdfsOperation" ref="hdfsOperation"> </property>
+		<property name="fileMgtDao" ref="fileMgtDao"></property>
+		<property name="dcService" ref="dcService"></property>
+	</bean>
+	
+	<bean id="fileSearchService" class="com.cdl.service.FileSearchServiceImpl"></bean>       
+     
+     <!-- <bean id="fileMgtAction"  class="com.cdl.action.FileMgtAction" scope="request">
+     	<property name="fileMgtService" ref="fileMgtService"></property>
+     </bean>   -->
+       
+</beans> 

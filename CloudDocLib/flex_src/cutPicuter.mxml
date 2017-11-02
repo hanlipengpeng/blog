@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" initialize="init()" backgroundColor="#ffffff" backgroundAlpha="1" height="100%" width="100%">
+	
+	<mx:Script source="dragImage.as"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.events.DragEvent;
+			import flash.utils.setTimeout;
+			import mx.collections.ArrayCollection;
+			import mx.effects.Zoom;
+			import mx.core.UIComponent;
+			import mx.controls.Image;
+			import mx.graphics.ImageSnapshot;
+			import flash.net.FileReference;
+			import mx.graphics.codec.JPEGEncoder;
+			import mx.managers.PopUpManager;
+			import mx.containers.TitleWindow;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.core.IFlexDisplayObject;
+			import mx.utils.*;
+			import mx.core.Application;
+			import astion.Dot;
+			import astion.ScaleBox;
+			
+			public static const LINE_WIDTH:Number = 0;//缩放边框宽度
+			private var boxList:ArrayCollection = new ArrayCollection();
+			
+			//初始化数据
+			private function init():void
+			{
+				_zoom = new Zoom;
+                initFileInfo();
+                initCanvas();
+                canvas.addEventListener(MouseEvent.MOUSE_UP,mouseUpCopyHandler);
+			}
+			
+			//截图，显示缩放选择框
+			private function doCapture():void
+			{
+				if(!_imgLoadedFlag)
+				{
+					Alert.show('请先加载图片','提示');
+					return ;
+				}
+				var b:ScaleBox = new ScaleBox();
+				copySource = b;
+				application.focusManager.setFocus(b);  
+				
+				//注册双击选择框，填写截图信息
+				b.addEventListener(MouseEvent.DOUBLE_CLICK,boxDoubleClickHandle);
+				//监听ctrl键，拖动复制
+				b.addEventListener(KeyboardEvent.KEY_DOWN,keyDownBoardHandler);
+                b.addEventListener(KeyboardEvent.KEY_UP,keyUpBoardHandler);
+                b.addEventListener(MouseEvent.MOUSE_OVER,mouseCopyOverHandler);
+                b.addEventListener(MouseEvent.MOUSE_OUT,mouseCopyOutHandler);
+				//拖拽复制功能
+				b.addEventListener(MouseEvent.MOUSE_DOWN,mouseDownCopyHandler);
+				//删除选择框
+				b.addEventListener(KeyboardEvent.KEY_DOWN,deleteScaleBoxHandle);
+
+				b.x = canvas.horizontalScrollPosition+100;
+				b.y = canvas.verticalScrollPosition+100;
+				b._width = img.width;
+				b._height = img.height;
+				b.width = 100;
+				b.height = 100;
+				b.visible = true;
+				canvas.addChild(b);
+				boxList.addItem(b);
+				canvas.setChildIndex(b,1);
+			}
+			
+			private function deleteScaleBoxHandle(e:KeyboardEvent):void
+			{
+				var o:Object = e.target;
+				if(e.keyCode == Keyboard.DELETE)
+				{
+					var b:ScaleBox = ScaleBox(o);
+					canvas.removeChild(b);
+					boxList.removeItemAt(boxList.getItemIndex(b));
+					Alert.show('删除成功','提示');
+				}
+			}
+			
+			//获取缩放选择框内的图像
+			private function boxDoubleClickHandle(e:MouseEvent):void
+			{
+				var u:Object = e.currentTarget;
+				var box:ScaleBox;
+				if(!(u is ScaleBox))
+				{
+					return;
+				}
+				else
+				{
+					box = u as ScaleBox;
+				}
+				
+				//trace(img.width+", "+img.height+", "+_originalWidth+", "+_originalHeight);
+				
+				var initBD:BitmapData = new BitmapData(img.width/_hslider,img.height/_hslider);
+   				initBD.draw(img);
+				var finalX:Number = box.x/_hslider+LINE_WIDTH;
+				var finalY:Number = box.y/_hslider+LINE_WIDTH;
+				var finalWidth:Number = box.boxWidth/_hslider-LINE_WIDTH;
+				var finalHeight:Number = box.boxHeight/_hslider-LINE_WIDTH;
+				//矩形为要截取区域
+                var re:Rectangle = new Rectangle(int(finalX),int(finalY),int(finalWidth),int(finalHeight));
+                var bytearray:ByteArray = new ByteArray();
+                //截取出所选区域的像素集合
+                bytearray = initBD.getPixels(re);
+                
+                var imgBD:BitmapData = new BitmapData(finalWidth,finalHeight);
+                //当前的bytearray.position为最大长度，要设为从0开始读取
+                bytearray.position=0;
+                var fillre:Rectangle = new Rectangle(0,0,finalWidth,finalHeight);
+                //将截取出的像素集合存在新的bitmapdata里，大小和截取区域一样
+                imgBD.setPixels(fillre,bytearray);
+                
+                showImg(box,imgBD,finalX,finalY,finalWidth,finalHeight);
+			}
+			
+			private function showImg(box:ScaleBox,e:BitmapData,finalX:Number,finalY:Number,width:Number,height:Number):void
+			{
+				var win:popWin = new popWin();
+				win.title = "填写模块信息";
+				win.width = width+260;
+				win.height = (height+60)<210?210:(height+80);
+				PopUpManager.addPopUp(win,this,true);
+			    PopUpManager.centerPopUp(win);
+			    win.cutImg.source = new Bitmap(e);
+			    win.txtX.text = "X:"+int(finalX)+", width:"+int(width);
+			    win.txtY.text = "Y:"+int(finalY)+", height:"+int(height);
+			    win._x = int(finalX);
+			    win._y = int(finalY);
+			    win._w = int(width);
+			    win._h = int(height);
+			    win._width = int(img.width);
+			    win._height = int(img.height);
+			    win._box = box;
+			}
+			//文件对象
+			private var _fileReference: FileReference = new FileReference();
+			//允许选择的文件的类型数组 
+			private var allowFileTypes : Array;
+			
+			private var _loader:Loader = new Loader();
+			private var _byteArray:ByteArray;
+			private var _bitmapData:BitmapData;
+			
+			private function initFileInfo():void
+			{
+				Security.allowDomain("*");
+				_fileReference.addEventListener(Event.COMPLETE,fileReferenceCompleteHandler);
+				
+				var imageTypes:FileFilter = new FileFilter("图片 (*.jpg,*.gif,*.png)", "*.jpg;*.gif; *.png;");
+				allowFileTypes = new Array(imageTypes);
+			}
+			private function fileReferenceCompleteHandler(e:Event):void
+			{
+			    _byteArray = _fileReference.data;
+			    _loader.contentLoaderInfo.addEventListener(Event.COMPLETE,loaderCompleteHandler);
+			    _loader.loadBytes(_byteArray);
+			}
+			
+			private var _originalX:int;
+			private var _originalY:int;
+			private var _originalWidth:int;
+			private var _originalHeight:int;
+			
+			private var _imgLoadedFlag:Boolean = false;
+			
+			private function loaderCompleteHandler(e:Event):void
+			{
+				if(canvas)
+				{
+					canvas.removeAllChildren();
+					boxList.removeAll();
+					canvas.verticalScrollPosition = 0;
+					canvas.horizontalScrollPosition = 0;
+				}
+				
+			    var bitmap:Bitmap = Bitmap(_loader.content);
+			    _bitmapData = bitmap.bitmapData;
+                img.source=this._loader.content;
+                canvas.addChild(img);
+                canvas.setChildIndex(img,0);
+                _imgLoadedFlag = true;
+			}
+			
+			private function checkImgHasLoaded():void
+			{
+				if(!_imgLoadedFlag)
+				{
+					Alert.show('请先加载图片','提示');
+					return ;
+				}
+			}
+			
+			private function loadPic():void
+			{
+				_fileReference.browse(allowFileTypes);
+    			_fileReference.addEventListener(Event.SELECT,fileReferenceSelectHandler);
+			}
+			private function fileReferenceSelectHandler(e:Event):void
+			{
+			    _fileReference.load();
+			}
+			
+			private var _zoom:Zoom;
+           	private var _zWidth:Number = 1;
+           	private var _zHeight:Number = 1;
+           
+   			private var _hslider:Number = 1;
+   			private function zoomin():void
+   			{
+   				if(!_imgLoadedFlag)
+				{
+					Alert.show('请先加载图片','提示');
+					return ;
+				}
+   				if(_hslider>2)
+   				{
+   					return;
+   				}
+   				_hslider+=0.1
+   				img.scaleX = _hslider;
+   				img.scaleY = _hslider;
+   				flash.utils.setTimeout(resizeBox,200,_zWidth,_hslider);
+                _zWidth = _hslider;
+                _zHeight = _hslider;
+                
+   			}
+   			
+   			private function zoomout():void
+   			{
+   				if(!_imgLoadedFlag)
+				{
+					Alert.show('请先加载图片','提示');
+					return ;
+				}
+   				if(_hslider<0.5)
+   				{
+   					return;
+   				}
+   				_hslider-=0.1
+   				img.scaleX = _hslider;
+   				img.scaleY = _hslider;
+   				flash.utils.setTimeout(resizeBox,200,_zWidth,_hslider);
+                _zWidth = _hslider;
+                _zHeight = _hslider;
+   			}
+   			
+   			private function resizeBox(f:Number,t:Number):void
+   			{
+   				if(boxList!=null && boxList.length!=0)
+   				{
+   					for(var i:int=0;i<boxList.length;i++)
+   					{
+   						var b:ScaleBox = ScaleBox(boxList.getItemAt(i));
+   						//设置剪切框的大小及位置
+   						b.x = b.x*t/f;
+   						b.y = b.y*t/f;
+   						b.resize(b.boxWidth*t/f,b.boxHeight*t/f);
+   					}
+   				}
+   			}
+   			//保存图片到本地
+			private function saveLocal():void
+			{
+				if(!_imgLoadedFlag)
+				{
+					Alert.show('请先加载图片','提示');
+					return ;
+				}
+				var file:FileReference=new FileReference();
+				file.addEventListener(Event.COMPLETE,saveLocalComplete);
+	            var txt:ByteArray = new ByteArray();
+	            txt.writeMultiByte(buildXmlInfo(),"utf-8");
+	            file.save(txt,"config.xml");
+			}
+			
+			private function buildXmlInfo():String
+			{
+				var content:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+				content += "<config width=\""+img.width/_hslider+"\" height=\""+img.height/_hslider+"\">\n";
+				
+				if(boxList!=null && boxList.length!=0)
+   				{
+   					for(var i:int=0;i<boxList.length;i++)
+   					{
+   						var b:ScaleBox = ScaleBox(boxList.getItemAt(i));
+   						
+   						if(!b.scaleBoxName)
+   						{
+   							continue;
+   						}
+   						//设置剪切框的大小及位置
+   						content += "    <area name=\""+b.scaleBoxName+"\">\n";
+   						content += "   	    <x>"+b._x+"</x>\n";
+   						content += "   	    <y>"+b._y+"</y>\n";
+   						content += "   	    <width>"+b._width+"</width>\n";
+   						content += "   	    <height>"+b._height+"</height>\n";
+   						content += "    </area>\n";
+   					}
+   				}
+				
+				content+="</config>\n";
+				
+				return content;
+			}
+			
+			private function saveLocalComplete(event:Event):void
+			{
+				Alert.show("保存文件成功","提示");
+			}
+			
+			private function loadXmlFile():void
+			{
+				if(!_imgLoadedFlag)
+				{
+					Alert.show('请先加载图片','提示');
+					return ;
+				}
+				//将图片大小设置成初始值
+				initialSize();
+				
+				//获取文件名，不能获取途径所以要同文件夹
+				var request:URLRequest = new URLRequest("config.xml");
+	            var xml:XML;
+	            var loader:URLLoader = new URLLoader();
+	            loader.load(request);
+	            loader.addEventListener(Event.COMPLETE,loadXmlComplete);
+			}
+			
+			private var _distancePaddingLeft:int = 50;
+			
+			private function loadXmlComplete(event:Event):void
+          	{
+          		var loader:URLLoader=event.target as URLLoader;
+				if(loader!=null)
+          	    {
+	           		var xml:XML=new XML(loader.data);
+           	        var i:int;   	
+           	        //trace(xml.@width+', '+xml.@height);
+	                for(i=0;i<xml.child("area").length();i++) 
+	        	    {
+	            		//trace((xml.area[i].@name)+", "+int(xml.area[i].x)+", "+xml.area[i].width+", "+xml.area[i].height);
+	            		var b:ScaleBox = new ScaleBox();
+						b.addEventListener(MouseEvent.DOUBLE_CLICK,boxDoubleClickHandle);
+						b.x = int(xml.area[i].x)-LINE_WIDTH;
+						b.y = int(xml.area[i].y)-LINE_WIDTH;
+						b._x = int(xml.area[i].x);
+						b._y = int(xml.area[i].y);
+						b._width = int(xml.area[i].width);
+						b._height = int(xml.area[i].height);
+						b.visible = true;
+						b.scaleBoxName = xml.area[i].@name;
+						b.resize(int(xml.area[i].width)+LINE_WIDTH,int(xml.area[i].height)+LINE_WIDTH);
+						canvas.addChild(b);
+						boxList.addItem(b);
+						canvas.setChildIndex(b,1);
+						
+						if(i==0)
+						{
+							canvas.verticalScrollPosition = xml.area[0].y-_distancePaddingLeft;
+							canvas.horizontalScrollPosition = xml.area[0].x-_distancePaddingLeft;
+						}
+	    	      	}
+                }
+			}
+			
+			private function initialSize():void
+			{
+				if(!_imgLoadedFlag)
+				{
+					Alert.show('请先加载图片','提示');
+					return ;
+				}
+				_hslider = 1
+				img.scaleX = _hslider;
+   				img.scaleY = _hslider;
+   				flash.utils.setTimeout(resizeBox,200,_zWidth,_hslider);
+                _zWidth = _hslider;
+                _zHeight = _hslider;
+			}
+			
+	        private var _oldX:Number,_oldY:Number;
+	        private var _canvasMoveFlag:Boolean=false;
+	        private var _canvasDragDistance:int = 150;
+	        private function initCanvas():void
+	        {
+	        	canvas.addEventListener(MouseEvent.MOUSE_DOWN,canvasMouseDownHandle);
+	        	canvas.addEventListener(MouseEvent.MOUSE_UP,onMouseUp);
+	        }
+	        
+	        private  function onMouseUp(e:MouseEvent):void
+	        {
+	        	if(!_canvasMoveFlag)
+	        	{
+	        		return;	
+	        	}
+	        	
+            	var distanceX:int = e.stageX - _oldX;
+                var distanceY:int = e.stageY - _oldY;
+                
+                if(Math.abs(distanceX)>Math.abs(distanceY))
+                {
+        			canvas.horizontalScrollPosition = canvas.horizontalScrollPosition + (distanceX>0?_canvasDragDistance:-_canvasDragDistance);
+                }
+                else
+                {
+                	canvas.verticalScrollPosition = canvas.verticalScrollPosition + (distanceY>0?_canvasDragDistance:-_canvasDragDistance);
+                }
+                
+                _oldX = e.stageX;
+                _oldY = e.stageY;
+                Mouse.cursor = MouseCursor.AUTO;
+                _canvasMoveFlag = false;
+	        }
+	        
+	        private  function canvasMouseDownHandle(e:MouseEvent):void
+	        {
+	        	var o:Object = e.target;
+	        	
+	        	if(o is Image)
+	        	{
+	        		Mouse.cursor = MouseCursor.HAND;
+	        		_canvasMoveFlag = true;
+	        		_oldX = e.stageX;
+	            	_oldY = e.stageY;
+	        	}
+	        }
+		]]>
+	</mx:Script>
+	<mx:HBox x="0" y="0" height="30">
+		<mx:LinkButton label="加载" click="loadPic();" icon="@Embed('assets/file-open.gif')"/>
+		<mx:VRule height="22"/>
+        <mx:LinkButton label="剪裁" click="doCapture();" icon="@Embed('assets/cut.png')"/>
+        <mx:VRule height="22"/>
+        <mx:LinkButton label="放大" click="zoomin();" icon="@Embed('assets/zoomin.png')"/>
+        <mx:LinkButton label="缩小" click="zoomout();" icon="@Embed('assets/zoomout.png')"/>
+        <mx:LinkButton label="初始大小" click="initialSize();" icon="@Embed('assets/ok.png')"/>
+        <mx:VRule height="22"/>
+        <mx:LinkButton label="导入" click="loadXmlFile();" icon="@Embed('assets/import.gif')"/>
+        <mx:LinkButton label="保存本地" click="saveLocal();" icon="@Embed('assets/save.png')"/>
+    </mx:HBox>
+	<mx:Canvas x="0" y="32" id="canvas" borderStyle="1" width="100%" height="100%">
+        <mx:Image id="img" visible="true"/>
+    </mx:Canvas>
+</mx:Application>

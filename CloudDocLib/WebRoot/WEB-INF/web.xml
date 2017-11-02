@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>CloudDocLib</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <!-- 初始化过程可知容器对于web.xml的加载过程是context-param >>listener >>fileter  >> servlet -->
+  <!-- context 找工程名字路径的标签，根据这个标签就可以自动找到工程，
+  该元素用来声明应用范围  上下文初始化参数      -->
+  <context-param>
+  	<param-name>WebAppRootKey</param-name>
+  	<param-value>CloudDocLib.root</param-value>
+  </context-param>
+  
+  <!--  加载容器    -->
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>classpath:spring-common.xml</param-value>
+  </context-param>
+  
+  <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <context-param>
+  	<param-name>log4jConfigLocation</param-name>
+  	<param-value>/WEB-INF/config/log4j.properties</param-value>
+  </context-param>
+  <listener>
+  	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  
+  <!-- servlet的配置 -->
+  <servlet>
+  	<description>This is the description of my j2ee component</description>
+  	<display-name>This is the display name of my j2ee component</display-name>
+  	<servlet-name>jspServerlet</servlet-name>
+  	<servlet-class>com.cdl.servlet.JspServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>jspServerlet</servlet-name>
+  	<url-pattern>/jspServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>fileUploadServlet</servlet-name>
+  	<servlet-class>com.cdl.servlet.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>fileUploadServlet</servlet-name>
+  	<url-pattern>/FileUploaded</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 过滤器  -->
+  <filter>
+  	<filter-name>struts2</filter-name>
+  	<filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>struts2</filter-name>
+  	<url-pattern>*.action</url-pattern>
+  </filter-mapping>
+   <filter-mapping>
+  	<filter-name>struts2</filter-name>
+  	<url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+    <filter-mapping>
+  	<filter-name>struts2</filter-name>
+  	<url-pattern>/struts2/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- 中文过滤器 ,过滤所有的请求 -->
+  <filter>
+  	<filter-name>CharacterEncodingFilter</filter-name>
+  	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+  	<init-param>
+  		<param-name>encoding</param-name>
+  		<param-value>UTF-8</param-value>
+  	</init-param>
+  	<init-param>
+  		<param-name>forceEncoding</param-name>
+  		<param-value>true</param-value>
+  	</init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>CharacterEncodingFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+</web-app>
