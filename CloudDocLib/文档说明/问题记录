@@ -1,0 +1,3 @@
+hadoop.hdfsoperationimpl 里面的translatePath 里面路径转换是否要加     "/"
+
+两种注入方法

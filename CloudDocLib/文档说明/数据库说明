@@ -1,0 +1,17 @@
+HDFS文件表                    HDFS_FILE_INFO
+删除文件中间表		
+文件信息表			？？？？
+文件类别信息表
+文件转换中间表		LIB_FILE_TRANS_TEMP
+未通过文档信息表
+
+
+
+
+现在用到的表：
+
+1：hdfs文件表     HDFS_FILE_INFO
+
+2:文件转换信息表       LIB_FILE_TRANS_TEMP
+
+3：文件类别信息表     

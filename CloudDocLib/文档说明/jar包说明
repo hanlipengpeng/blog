@@ -1,0 +1,18 @@
+IK:lucene中文分词包
+JMupdf.jar:解析PDF的JAR
+aspectjrt,aspectjweaver:结合spring aop
+ant,maven:两种项目打包编译工具
+axis,xfire,cxf:流行的webservice框架
+proxool,c3po,dbcp:常见的数据库连接池
+dom4j,jdom流行的解析XML的两种工具
+ext,jquery,dwr 曾经流行的javascript三大框架
+ehcache,memercache,redis流行的缓存框架
+hibernate,spring jdbctemplate,ibatis/mybatis流行的持久层框架
+jacob.jar:操作金山word
+je：BDB数据库相关包
+fusionchart,echart,jfreechart流行的图表工具
+json-lib:在json和java对象之间转换工具
+poi,jxl：流行的操作excel的两个工具
+protobuf,avro,thrift:流行的三个二进制通信框架
+quartz:最流行定时调度器
+
